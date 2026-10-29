@@ -1,4 +1,4 @@
-# Shaktiman Vanish
+# Shaktiman Vanish - webcam disappearance effect
 
 Point your index finger up. Your silhouette becomes a spinning whirlwind and flies out of frame.
 Video is processed locally; nothing is recorded or uploaded.
