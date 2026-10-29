@@ -12,18 +12,11 @@ Video is processed locally; nothing is recorded or uploaded.
 
 **Controls:** `R` reappear · `V` test the effect · `Space` recapture background · `F` fullscreen · `Q` quit.
 
-## Music
-
-Put **`music.wav`** or **`music.mp3`** beside the launchers. A three-second cue plays once when the whirlwind starts. `R`, `Space`, and quitting stop it. Custom music stays local.
-Use `--no-music` to mute it, or `--music-volume 0.5` to set the volume (0–1). For another file: `--music /path/to/clip.mp3 --music-start 4`.
-
 ## Google Meet, Zoom, and other calls
 
 1. Install [OBS Studio](https://obsproject.com/download) (30+ on Mac). Open OBS, click **Start Virtual Camera**, allow the setup prompts, then **Stop Virtual Camera** and quit OBS.
 2. Close the regular preview and run **`start-meeting.command`** on Mac or **`start-meeting.bat`** on Windows.
 3. Select **OBS Virtual Camera** in your meeting app's camera settings. Keep Shaktiman running and OBS closed. Use your normal microphone.
-
-**Share music + voice on Mac:** install [BlackHole 2ch](https://github.com/ExistentialAudio/BlackHole#installation-instructions), **restart your Mac**, run `./start-meeting.command --meeting-audio`, and select **BlackHole 2ch** as the call's microphone. Keep the call's speaker output on your headphones/speakers. If music is filtered out, disable noise cancellation or enable Zoom's original sound.
 
 ## Quick fixes
 

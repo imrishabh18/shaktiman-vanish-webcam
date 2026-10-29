@@ -31,7 +31,7 @@ if errorlevel 1 goto :venv_error
 if errorlevel 1 goto :python_error
 fc /b requirements.txt ".venv\.vanish-requirements" >nul 2>nul
 if errorlevel 1 goto :install
-"%VENV_PY%" -c "import cv2, mediapipe, numpy, pyvirtualcam, sounddevice, soundfile" >nul 2>nul
+"%VENV_PY%" -c "import cv2, mediapipe, numpy, pyvirtualcam" >nul 2>nul
 if errorlevel 1 goto :install
 goto :run
 

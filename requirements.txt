@@ -3,6 +3,4 @@ opencv-contrib-python>=4.14,<6
 numpy>=2.0,<3
 certifi>=2025.1.31
 pyvirtualcam>=0.15,<1
-sounddevice>=0.5,<1
-soundfile>=0.13,<1
 pyobjc-framework-AVFoundation>=11,<13; sys_platform == "darwin"

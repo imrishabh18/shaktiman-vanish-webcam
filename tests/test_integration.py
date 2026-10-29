@@ -26,7 +26,6 @@ class ShaktimaanCameraTests(unittest.TestCase):
         recognizer = Mock(last_hand_count=1)
         recognizer.recognize_point_up.side_effect = scores
         segmenter = Mock()
-        audio = Mock()
         camera = Mock(width=64, height=48)
         args = SimpleNamespace(
             camera=0, width=64, height=48, fps=30, fullscreen=False,
@@ -39,7 +38,6 @@ class ShaktimaanCameraTests(unittest.TestCase):
         displayed = []
         with ExitStack() as mocks:
             mocks.enter_context(patch.object(app, "download_models"))
-            mocks.enter_context(patch.object(app, "create_audio", return_value=audio))
             mocks.enter_context(patch.object(app, "open_camera", return_value=capture))
             mocks.enter_context(patch.object(app, "create_tasks", return_value=(segmenter, recognizer)))
             mocks.enter_context(patch.object(app, "open_virtual_camera", return_value=camera))
@@ -63,11 +61,6 @@ class ShaktimaanCameraTests(unittest.TestCase):
         segmenter.close.assert_called_once()
         recognizer.close.assert_called_once()
         camera.close.assert_called_once()
-        audio.close.assert_called_once()
-        self.assertEqual(audio.play.call_count, snapshot.call_count if not empty_mask else 0)
-        if ord("r") in keys or ord(" ") in keys:
-            if snapshot.call_count:
-                self.assertGreaterEqual(audio.stop.call_count, 1)
         if setup_ui:
             for sent, preview, original in zip(camera.send.call_args_list, displayed, frames):
                 np.testing.assert_array_equal(sent.args[0], original)
