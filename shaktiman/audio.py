@@ -69,8 +69,9 @@ def meeting_devices(backend=sd, microphone=None, output=None) -> tuple[int, int]
                        if "blackhole" in d["name"].casefold() and d["max_output_channels"] >= 2), None)
         if output is None:
             raise RuntimeError(
-                "Meeting audio needs a virtual microphone. Install BlackHole 2ch on Mac, "
-                "then start with --meeting-audio and choose BlackHole 2ch as the meeting microphone."
+                "BlackHole 2ch is not available to macOS. Install BlackHole 2ch on Mac; "
+                "if it is already installed, restart your Mac and reopen this launcher. "
+                "Then choose BlackHole 2ch as the meeting microphone."
             )
     output_index = _device_index(devices, output, "output")
     if microphone is None:

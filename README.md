@@ -23,7 +23,7 @@ Use `--no-music` to mute it, or `--music-volume 0.5` to set the volume (0–1). 
 2. Close the regular preview and run **`start-meeting.command`** on Mac or **`start-meeting.bat`** on Windows.
 3. Select **OBS Virtual Camera** in your meeting app's camera settings. Keep Shaktiman running and OBS closed. Use your normal microphone.
 
-**Share music + voice on Mac:** install [BlackHole 2ch](https://github.com/ExistentialAudio/BlackHole#installation-instructions), run `./start-meeting.command --meeting-audio`, and select **BlackHole 2ch** as the call's microphone. Keep the call's speaker output on your headphones/speakers. If music is filtered out, disable noise cancellation or enable Zoom's original sound.
+**Share music + voice on Mac:** install [BlackHole 2ch](https://github.com/ExistentialAudio/BlackHole#installation-instructions), **restart your Mac**, run `./start-meeting.command --meeting-audio`, and select **BlackHole 2ch** as the call's microphone. Keep the call's speaker output on your headphones/speakers. If music is filtered out, disable noise cancellation or enable Zoom's original sound.
 
 ## Quick fixes
 
