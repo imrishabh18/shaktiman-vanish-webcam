@@ -5,7 +5,7 @@ Video is processed locally; nothing is recorded or uploaded.
 
 ## Start
 
-1. Install [Python 3.10+](https://www.python.org/downloads/), then [download and extract this repo](https://github.com/imrishabh18/shaktiman-vanish/archive/refs/heads/main.zip).
+1. Install [Python 3.10+](https://www.python.org/downloads/), then [download and extract this repo](https://github.com/imrishabh18/shaktiman-vanish-webcam/archive/refs/heads/main.zip).
 2. Double-click **`start.command`** on Mac or **`start.bat`** on Windows. First launch installs dependencies and downloads the models.
 3. Keep the camera still. **Step completely out of view** until the preview says **BACKGROUND READY — STEP BACK IN**.
 4. Return, point one index finger upward with the other fingers curled, and hold for half a second. Either hand works.
