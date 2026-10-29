@@ -26,6 +26,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
 from .background import CleanBackgroundCapture, calibration_preview, mask_has_person
+from .audio import create_audio
 from .cameras import mac_camera_devices, preferred_webcam
 from .effect import SHAKTIMAAN_SECONDS, capture_shaktimaan, render_shaktimaan
 from .gesture import PointUpTrigger, pointing_up_score
@@ -51,6 +52,20 @@ def positive_fps(value: str) -> float:
     if not np.isfinite(fps) or not 1 <= fps <= 120:
         raise argparse.ArgumentTypeError("FPS must be between 1 and 120.")
     return fps
+
+
+def music_volume(value: str) -> float:
+    number = float(value)
+    if not np.isfinite(number) or not 0 <= number <= 1:
+        raise argparse.ArgumentTypeError("Music volume must be between 0 and 1.")
+    return number
+
+
+def music_start(value: str) -> float:
+    number = float(value)
+    if not np.isfinite(number) or number < 0:
+        raise argparse.ArgumentTypeError("Music start must be nonnegative and finite.")
+    return number
 
 def send_virtual_frame(camera, frame: np.ndarray) -> None:
     if frame.shape[:2] != (camera.height, camera.width):
@@ -146,6 +161,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--virtual-backend", choices=("obs", "unitycapture", "v4l2loopback"))
     parser.add_argument("--virtual-device")
     parser.add_argument("--gesture-debug", action="store_true")
+    parser.add_argument("--music", type=Path, help="Music clip; defaults to music.wav or music.mp3 in this folder")
+    parser.add_argument("--music-start", type=music_start, default=0, help="Start time in the music file, in seconds")
+    parser.add_argument("--music-volume", type=music_volume, default=0.5, help="Music volume, 0 to 1")
+    parser.add_argument("--no-music", action="store_true", help="Mute the animation cue")
+    parser.add_argument("--meeting-audio", action="store_true", help="Mix microphone and music into BlackHole for calls")
+    parser.add_argument("--audio-output", help="Virtual output name/index; defaults to BlackHole for meeting audio")
+    parser.add_argument("--microphone", help="Physical microphone name/index for meeting audio")
+    parser.add_argument("--list-audio-devices", action="store_true")
     parser.add_argument("--self-test", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args()
 
@@ -219,6 +242,9 @@ def open_virtual_camera(args: argparse.Namespace, width: int, height: int):
 def run_camera(args: argparse.Namespace, resources: ExitStack | None = None) -> int:
     with resources or ExitStack() as resources:
         download_models()
+        audio = create_audio(args, APP_DIR)
+        if audio is not None:
+            resources.callback(audio.close)
         capture = open_camera(args.camera, args.width, args.height)
         resources.callback(capture.release)
         capture.set(cv2.CAP_PROP_FPS, args.fps)
@@ -307,6 +333,12 @@ def run_camera(args: argparse.Namespace, resources: ExitStack | None = None) -> 
                         state.vanish_started = None
                         trigger.reset(require_release=True)
                         print("[Effect] No person found. Lower your hand, step into view, and try again.")
+                    else:
+                        # Start both clocks after segmentation, keeping the cue
+                        # aligned with the first visible animation frame.
+                        state.vanish_started = time.perf_counter()
+                        if audio is not None:
+                            audio.play()
                 if state.phase == "spinning":
                     age = max(0.0, time.perf_counter() - state.vanish_started)
                     display = render_shaktimaan(background, snapshot, age)
@@ -329,6 +361,8 @@ def run_camera(args: argparse.Namespace, resources: ExitStack | None = None) -> 
             if key in (ord("q"), 27):
                 break
             if key == ord(" "):
+                if audio is not None:
+                    audio.stop()
                 state.phase = "calibrating"
                 state.vanish_started = None
                 background = snapshot = None
@@ -339,6 +373,8 @@ def run_camera(args: argparse.Namespace, resources: ExitStack | None = None) -> 
                 ready_notice_until = 0
                 print("[Setup] Step fully out of view and wait for BACKGROUND READY.")
             elif key == ord("r") and background is not None:
+                if audio is not None:
+                    audio.stop()
                 state.phase = "ready"
                 state.vanish_started = None
                 snapshot = None
@@ -358,6 +394,11 @@ def run_camera(args: argparse.Namespace, resources: ExitStack | None = None) -> 
 
 def run() -> int:
     args = parse_args()
+    if args.list_audio_devices:
+        import sounddevice as sd
+        for index, device in enumerate(sd.query_devices()):
+            print(f"{index}: {device['name']} (inputs={device['max_input_channels']}, outputs={device['max_output_channels']})")
+        return 0
     if args.list_cameras:
         if platform.system() != "Darwin":
             raise RuntimeError("Camera name listing is available on macOS. Use --camera INDEX on other systems.")

@@ -24,7 +24,7 @@ fi
 "$VENV_PY" -c 'import sys; raise SystemExit(sys.version_info < (3, 10))' || fail "The existing .venv needs Python 3.10 or newer. Rename .venv and run this launcher again."
 
 if ! cmp -s requirements.txt .venv/.vanish-requirements ||
-   ! "$VENV_PY" -c 'import cv2, mediapipe, numpy, pyvirtualcam, AVFoundation' >/dev/null 2>&1; then
+   ! "$VENV_PY" -c 'import cv2, mediapipe, numpy, pyvirtualcam, sounddevice, soundfile, AVFoundation' >/dev/null 2>&1; then
     printf '[Shaktimaan] Installing dependencies. Internet is required for this setup.\n'
     "$VENV_PY" -m pip install -r requirements.txt || fail "Dependency setup failed. Check the error above and your internet connection, then rerun this launcher."
     cp requirements.txt .venv/.vanish-requirements || fail "Could not save the setup marker in .venv. Check folder permissions."
